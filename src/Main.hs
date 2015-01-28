@@ -1,20 +1,27 @@
 module Main where
 
-import qualified Data.List            as L
+import           Monitoring.Shinken.Parser
+
 import           System.Directory
 import           System.Environment
 import           System.FilePath.Find
 import           System.IO
-import           System.IO.Unsafe
 
 pattern = "*.cfg"
 
-search dir =
-  find always (fileName ~~? pattern) dir
+search = find always (fileName ~~? pattern)
 
 main = do
-          dir   <- getCurrentDirectory
-          files <- search dir
-          mapM_ putStrLn files
-          filesContent <- mapM readFile files
-          mapM_ putStrLn filesContent
+        dir   <- getCurrentDirectory
+        files <- search dir
+        putStrLn "* Fichiers trouvés :"
+        mapM_ putStrLn files
+        let testFile = head files
+        testContent <- readFile testFile
+        putStrLn ""
+        putStrLn $ "* Fichier de test :" ++ testFile
+        putStrLn testContent
+        putStrLn ""
+        putStrLn "* Parsing du fichier"
+        putStrLn $  parseConfigFile testFile testContent
+
