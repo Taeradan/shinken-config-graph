@@ -23,5 +23,5 @@ main = do
         putStrLn testContent
         putStrLn ""
         putStrLn "* Parsing du fichier"
-        putStrLn $  parseConfigFile testFile testContent
+        print $ parseConfigFile testFile testContent
 
