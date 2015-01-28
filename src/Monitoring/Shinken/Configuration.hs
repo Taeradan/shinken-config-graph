@@ -2,25 +2,23 @@ module Monitoring.Shinken.Configuration where
 
 type Configuration = [ConfObject]
 
-data ConfObject = HostGroup
-                | Arbiter
+data ConfObject = Arbiter
                 | Broker
                 | Command
                 | Contact
-                | Contactgroup
-                | Discoveryrule
-                | Discoveryrun
-                | Cost
-                | Costgroup
+                | ContactGroup
+                | DiscoveryRule
+                | DiscoveryRun
+                | Host
+                | HostGroup String
                 | Module
-                | Notificationway
+                | NotificationWay
                 | Poller
                 | Reactionner
                 | Realm
                 | Receiver
                 | Scheduler
                 | Service
-                | Timeperiod
+                | TimePeriod
                 deriving (Show)
-
 
