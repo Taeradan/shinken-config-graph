@@ -15,8 +15,9 @@ configParser = do
         skipMany comments
         string "define"
         spaces
-        string "hostgroup"
-        return (HostGroup)
+        objectType <- manyTill anyChar (string "{")
+        block <- manyTill anyChar (string "}")
+        return (HostGroup block)
 
 comments :: Parsec String () ()
 comments = do 
