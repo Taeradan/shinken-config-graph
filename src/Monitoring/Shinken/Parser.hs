@@ -5,14 +5,14 @@ import           Monitoring.Shinken.Configuration
 import           Control.Applicative
 import           Control.Monad.Identity           (Identity)
 import           Text.Parsec                      ((<?>))
-import qualified Text.Parsec                      as Parsec
+import  Text.Parsec
 
-parseConfigFile :: FilePath -> String -> Either Parsec.ParseError ConfObject
-parseConfigFile filePath content = Parsec.parse configParser filePath content
+parseConfigFile :: FilePath -> String -> Either ParseError ConfObject
+parseConfigFile filePath content = parse configParser filePath content
 
-configParser :: Parsec.Parsec String () ConfObject
+configParser :: Parsec String () ConfObject
 configParser = do
-        Parsec.string "define"
-        Parsec.spaces
-        Parsec.string "hostgroup"
+        string "define"
+        spaces
+        string "hostgroup"
         return (HostGroup)
