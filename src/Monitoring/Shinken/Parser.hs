@@ -12,7 +12,15 @@ parseConfigFile filePath content = parse configParser filePath content
 
 configParser :: Parsec String () ConfObject
 configParser = do
+        skipMany comments
         string "define"
         spaces
         string "hostgroup"
         return (HostGroup)
+
+comments :: Parsec String () ()
+comments = do 
+        spaces
+        string "#"
+        manyTill anyChar newline
+        return ()
