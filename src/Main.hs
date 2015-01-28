@@ -1,11 +1,11 @@
 module Main where
 
-import System.Environment
-import System.Directory
-import System.IO
-import System.IO.Unsafe
-import System.FilePath.Find
-import qualified Data.List as L
+import qualified Data.List            as L
+import           System.Directory
+import           System.Environment
+import           System.FilePath.Find
+import           System.IO
+import           System.IO.Unsafe
 
 pattern = "*.cfg"
 
@@ -16,3 +16,5 @@ main = do
           dir   <- getCurrentDirectory
           files <- search dir
           mapM_ putStrLn files
+          filesContent <- mapM readFile files
+          mapM_ putStrLn filesContent
