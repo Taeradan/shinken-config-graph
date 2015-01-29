@@ -10,7 +10,7 @@ data ConfObject = Arbiter
                 | DiscoveryRule
                 | DiscoveryRun
                 | Host
-                | HostGroup String
+                | HostGroup {name :: String, remaining :: String}
                 | Module
                 | NotificationWay
                 | Poller
