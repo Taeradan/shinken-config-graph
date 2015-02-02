@@ -16,15 +16,14 @@ configFile = do
 
 definition :: Parser ConfObject
 definition = do
-        skipMany trash
-        string "define"
+        spaces
+        skipMany comment
+        manyTill anyChar (string "define")
         spaces
         objectType <- manyTill anyChar (string "{")
         objectBlock <- manyTill anyChar (string "}")
         manyTill anyChar newline
-        return (HostGroup objectType objectBlock)
-
-type Attribute = (String, String)
+        return (parseObjectType objectType objectBlock)
 
 attribute :: Parser Attribute
 attribute = do
@@ -34,18 +33,9 @@ attribute = do
     value <- manyTill anyChar newline
     return (key, value)
 
-trash :: Parser ()
-trash = do
-    spaces
-    comment <|> emptyLine
-
 comment :: Parser ()
 comment = do
-        string "#"
+        string "#" <|> char ';'
         manyTill anyChar newline
+        spaces
         return ()
-
-emptyLine :: Parser ()
-emptyLine = do
-    newline
-    return ()
