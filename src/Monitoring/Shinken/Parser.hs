@@ -20,8 +20,8 @@ definition = do
     skipMany comment
     manyTill anyChar (string "define")
     spaces
-    objectType <- manyTill anyChar (string "{")
-    objectBlock <- manyTill anyChar (string "}")
+    objectType <- manyTill anyChar (char '{')
+    objectBlock <- manyTill anyChar (char '}')
     manyTill anyChar newline
     return (parseObjectType objectType objectBlock)
 
@@ -35,7 +35,7 @@ attribute = do
 
 comment :: Parser ()
 comment = do
-    string "#" <|> char ';'
+    char '#' <|> char ';'
     manyTill anyChar newline
     spaces
     return ()
