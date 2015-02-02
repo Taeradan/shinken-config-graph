@@ -11,19 +11,19 @@ parseConfigFile filePath content = parse configFile filePath content
 
 configFile :: Parser [ConfObject]
 configFile = do
-        def <- many definition
-        return def
+    def <- many definition
+    return def
 
 definition :: Parser ConfObject
 definition = do
-        spaces
-        skipMany comment
-        manyTill anyChar (string "define")
-        spaces
-        objectType <- manyTill anyChar (string "{")
-        objectBlock <- manyTill anyChar (string "}")
-        manyTill anyChar newline
-        return (parseObjectType objectType objectBlock)
+    spaces
+    skipMany comment
+    manyTill anyChar (string "define")
+    spaces
+    objectType <- manyTill anyChar (string "{")
+    objectBlock <- manyTill anyChar (string "}")
+    manyTill anyChar newline
+    return (parseObjectType objectType objectBlock)
 
 attribute :: Parser Attribute
 attribute = do
@@ -35,7 +35,7 @@ attribute = do
 
 comment :: Parser ()
 comment = do
-        string "#" <|> char ';'
-        manyTill anyChar newline
-        spaces
-        return ()
+    string "#" <|> char ';'
+    manyTill anyChar newline
+    spaces
+    return ()
