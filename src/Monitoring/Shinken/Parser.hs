@@ -6,15 +6,15 @@ import           Control.Monad.Identity           (Identity)
 import           Text.Parsec
 import           Text.Parsec.String
 
-parseConfigFile :: FilePath -> String -> Either ParseError [ConfObject]
+parseConfigFile :: FilePath -> String -> Either ParseError [Object]
 parseConfigFile filePath content = parse configFile filePath content
 
-configFile :: Parser [ConfObject]
+configFile :: Parser [Object]
 configFile = do
     def <- many definition
     return def
 
-definition :: Parser ConfObject
+definition :: Parser Object
 definition = do
     spaces
     skipMany comment
