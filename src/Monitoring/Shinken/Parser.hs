@@ -11,7 +11,7 @@ import           Text.Parsec.String
 import qualified Text.Parsec.Token                as Token
 
 parseConfigFile :: FilePath -> String -> Either ParseError [Object]
-parseConfigFile filePath content = parse configFile filePath content
+parseConfigFile = parse configFile
 
 -- Lexer
 languageDef = emptyDef { Token.commentLine = "#"
@@ -27,11 +27,11 @@ reserved   = Token.reserved   lexer -- parses a reserved name
 whiteSpace = Token.whiteSpace lexer -- parses whitespace
 braces     = Token.braces     lexer
 
+-- Parser
 configFile :: Parser [Object]
 configFile = do
     whiteSpace
-    def <- many1 definition
-    return def
+    many1 definition
 
 definition :: Parser Object
 definition = do
@@ -45,7 +45,7 @@ attribute = do
     key <- identifier
     value <- attributeValue
     whiteSpace
-    return (key, (trimRight value))
+    return (key, trimRight value)
 
 trimRight :: String -> String
 trimRight str | all isSpace str = ""
