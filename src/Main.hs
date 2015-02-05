@@ -9,8 +9,6 @@ import           System.IO
 
 pattern = "*.cfg"
 
-search = find always (fileName ~~? pattern)
-
 main = do
         dir   <- getCurrentDirectory
         files <- search dir
@@ -25,6 +23,8 @@ main = do
         putStrLn ""
         putStrLn "* Parsing du fichier"
         print $ parseConfigFile testFile normalisedTestContent
+
+search = find always (fileName ~~? pattern &&? fileName /~? "shinken.cfg")
 
 normaliseComments :: String -> String
 normaliseComments = map (\x -> if x==';' then '#' else x)
