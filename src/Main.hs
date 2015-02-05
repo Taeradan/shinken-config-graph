@@ -18,10 +18,13 @@ main = do
         mapM_ putStrLn files
         let testFile = head files
         testContent <- readFile testFile
+        let normalisedTestContent = normaliseComments testContent
         putStrLn ""
         putStrLn $ "* Fichier de test :" ++ testFile
-        putStrLn testContent
+        putStrLn normalisedTestContent
         putStrLn ""
         putStrLn "* Parsing du fichier"
-        print $ parseConfigFile testFile testContent
+        print $ parseConfigFile testFile normalisedTestContent
 
+normaliseComments :: String -> String
+normaliseComments = map (\x -> if x==';' then '#' else x)
