@@ -5,6 +5,7 @@ import           Monitoring.Shinken.Configuration
 import           Control.Monad.Identity           (Identity)
 import           Data.Char
 import           Data.Map.Strict
+import           Data.Maybe
 import           Text.Parsec
 import           Text.Parsec.Language
 import           Text.Parsec.String
@@ -31,9 +32,10 @@ braces     = Token.braces     lexer
 configFile :: Parser [Object]
 configFile = do
     whiteSpace
-    many1 definition
+    list <- many1 definition
+    return $ catMaybes list
 
-definition :: Parser Object
+definition :: Parser (Maybe Object)
 definition = do
     reserved "define"
     objectType <- identifier
