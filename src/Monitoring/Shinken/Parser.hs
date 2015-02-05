@@ -11,8 +11,8 @@ import           Text.Parsec.Language
 import           Text.Parsec.String
 import qualified Text.Parsec.Token                as Token
 
-parseConfigFile :: FilePath -> String -> Either ParseError [Object]
-parseConfigFile = parse configFile
+parseConfigFile :: (FilePath, String) -> Either ParseError [Object]
+parseConfigFile (filepath, string) = parse configFile filepath string
 
 -- Lexer
 languageDef = emptyDef { Token.commentLine = "#"
