@@ -3,49 +3,53 @@ module Monitoring.Shinken.Parser where
 import           Monitoring.Shinken.Configuration
 
 import           Control.Monad.Identity           (Identity)
+import           Data.Char
 import           Data.Map.Strict
 import           Text.Parsec
+import           Text.Parsec.Language
 import           Text.Parsec.String
+import qualified Text.Parsec.Token                as Token
 
 parseConfigFile :: FilePath -> String -> Either ParseError [Object]
 parseConfigFile filePath content = parse configFile filePath content
 
+-- Lexer
+languageDef = emptyDef { Token.commentLine = "#"
+                       , Token.identStart  = letter <|> char '_'
+                       , Token.identLetter = alphaNum <|> oneOf ":!$%&*+.,/<=>?@\\^|-~_"
+                       , Token.reservedNames     = ["define"]
+                       }
+
+lexer = Token.makeTokenParser languageDef
+
+identifier = Token.identifier lexer -- parses an identifier
+reserved   = Token.reserved   lexer -- parses a reserved name
+whiteSpace = Token.whiteSpace lexer -- parses whitespace
+braces     = Token.braces     lexer
+
 configFile :: Parser [Object]
 configFile = do
-    def <- many definition
+    whiteSpace
+    def <- many1 definition
     return def
 
 definition :: Parser Object
 definition = do
-    spaces
-    skipMany comment
-    manyTill anyChar (string "define")
-    many spacetab
-    objectType <- many letter
-    many spacetab
-    char '{'
-    spaces
-    objectBlock <- manyTill attribute (char '}')
-    manyTill anyChar newline
+    reserved "define"
+    objectType <- identifier
+    objectBlock <- braces (many attribute)
     return (parseObjectType objectType (fromList objectBlock))
 
 attribute :: Parser Attribute
 attribute = do
-    spaces
-    key <- attributeKey
-    spaces
-    value <- manyTill anyChar newline
-    return (key, value)
+    key <- identifier
+    value <- attributeValue
+    whiteSpace
+    return (key, (trimRight value))
 
-attributeKey :: Parser String
-attributeKey = many (letter <|> (char '_') <|> (char '-'))
+trimRight :: String -> String
+trimRight str | all isSpace str = ""
+trimRight (c : cs) = c : trimRight cs
 
-comment :: Parser ()
-comment = do
-    char '#' <|> char ';'
-    manyTill anyChar newline
-    spaces
-    return ()
-
-spacetab :: Parser Char
-spacetab = char ' ' <|> tab
+attributeValue :: Parser String
+attributeValue = many (alphaNum <|> oneOf ":!$%&*+.,/<=>?@\\^|-~_" <|> char ' ')
