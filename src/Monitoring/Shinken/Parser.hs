@@ -16,7 +16,7 @@ parseConfigFile (filepath, string) = parse configFile filepath string
 
 -- Lexer
 languageDef = emptyDef { Token.commentLine = "#"
-                       , Token.identStart  = letter <|> char '_'
+                       , Token.identStart  = letter <|> oneOf "+_"
                        , Token.identLetter = alphaNum <|> oneOf ":!$%&*+.,/<=>?@\\^|-~_"
                        , Token.reservedNames     = ["define"]
                        }
@@ -54,4 +54,4 @@ trimRight str | all isSpace str = ""
 trimRight (c : cs) = c : trimRight cs
 
 attributeValue :: Parser String
-attributeValue = many (alphaNum <|> oneOf ":!$%&*+.,/<=>?@\\^|-~_" <|> char ' ')
+attributeValue = many (alphaNum <|> oneOf ":!$%&*+.,/<=>?\\\"@^|-~_[]{}'" <|> char ' ')
