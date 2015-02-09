@@ -19,12 +19,6 @@ main = do
         content <- mapM readFile files
         let normalisedContent = map normaliseComments content
             objects = map parseConfigFile (zip files normalisedContent)
-        --putStrLn "* Found Files:"
-        --mapM_ putStrLn files
-        --putStrLn ""
-        --putStrLn "* Parsed objects:"
-        --mapM_ print objects
-        --putStrLn ""
         let all = zip files objects
             errors = filter (\ (_,x) -> isLeft x) all
             goods = filter (\ (_,x) -> isRight x) all
@@ -37,7 +31,9 @@ main = do
         putStr "    * Files with errors: "
         print $ length errors
 
-search = find always (fileName ~~? pattern &&? fileName /~? "shinken.cfg")
+search = find always (fileName ~~? pattern
+                  &&? fileName /~? "shinken.cfg"
+                  &&? directory /~? "**resource.d")
 
 normaliseComments :: String -> String
 normaliseComments = map (\ x -> if x == ';' then '#' else x)
