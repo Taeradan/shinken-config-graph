@@ -32,7 +32,7 @@ braces     = Token.braces     lexer
 configFile :: Parser [Object]
 configFile = do
     whiteSpace
-    list <- many1 definition
+    list <- many definition
     return $ catMaybes list
 
 definition :: Parser (Maybe Object)
