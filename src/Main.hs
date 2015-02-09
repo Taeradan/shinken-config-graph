@@ -18,11 +18,11 @@ main = do
         files <- search dir
         content <- mapM readFile files
         let normalisedContent = map normaliseComments content
-            objects = map parseConfigFile (zip files normalisedContent)
+            objects = zipWith parseConfigFile files normalisedContent
         let all = zip files objects
             errors = filter (\ (_,x) -> isLeft x) all
             goods = filter (\ (_,x) -> isRight x) all
-        mapM_ printBoth $ errors
+        mapM_ printBoth errors
         putStrLn "* Stats"
         putStr "    * Files found: "
         print $ length files
@@ -38,8 +38,8 @@ search = find always (fileName ~~? pattern
 normaliseComments :: String -> String
 normaliseComments = map (\ x -> if x == ';' then '#' else x)
 
-printBoth :: (FilePath, Either ParseError [Object]) -> IO ()
-printBoth (filepath, object) = do
+printBoth :: FilePath -> Either ParseError [Object] -> IO ()
+printBoth filepath object = do
     putStr "***** File: "
     putStrLn filepath
     print object
