@@ -2,6 +2,7 @@ module Main where
 
 import           Monitoring.Shinken.Configuration
 import           Monitoring.Shinken.Parser
+import           Monitoring.Shinken.Print
 
 import           Data.Either
 import           Data.List                        hiding (find)
@@ -22,6 +23,7 @@ main = do
             errors = filter (\ (_,x) -> isLeft x) parseResults
             objects = concat . rights . map snd $ parseResults
         mapM_ printErrors errors
+        putStrLn $ printDotGraph objects
         putStrLn "* Stats"
         putStr "    * Files found: "
         print $ length files
