@@ -18,16 +18,15 @@ main = do
         files <- search dir
         content <- mapM readFile files
         let normalisedContent = map normaliseComments content
-            objects = zipWith parseConfigFile files normalisedContent
-            all = zip files objects
-            errors = filter (\ (_,x) -> isLeft x) all
-            goods = filter (\ (_,x) -> isRight x) all
+            parseResults = zipWith (\ x y -> (x, parseConfigFile x y)) files normalisedContent
+            errors = filter (\ (_,x) -> isLeft x) parseResults
+            objects = concat . rights . map snd $ parseResults
         mapM_ printErrors errors
         putStrLn "* Stats"
         putStr "    * Files found: "
         print $ length files
         putStr "    * Objects found: "
-        print . length . concat . rights $ objects
+        print $ length objects
         putStr "    * Files with errors: "
         print $ length errors
 
