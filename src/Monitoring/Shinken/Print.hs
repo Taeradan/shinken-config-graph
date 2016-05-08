@@ -11,10 +11,12 @@ printDotGraph objects = unlines [header, body objects, footer]
           footer = "}"
 
 body :: [Object] -> String
-body objects = unlines [unlines $ mapMaybe node objects, relations objects]
+body objects = concat [unlines $ mapMaybe node objects, unlines $ mapMaybe relations objects]
 
 node :: Object -> Maybe String
 node (Host attributes) = Map.lookup "host_name" attributes
 node _ = Nothing
 
-relations _ = ""
+relations :: Object -> Maybe String
+relations (Service attributes) = Map.lookup "host_name" attributes
+relations _ = Nothing
