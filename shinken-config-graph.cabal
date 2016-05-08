@@ -12,7 +12,7 @@ cabal-version:       >=1.10
 executable shinken-config-graph
   main-is:             Main.hs
   ghc-options:         -Wall
-  build-depends:       base >=4.7 && <4.8, directory, filemanip, mtl, parsec, containers
+  build-depends:       base >=4.7 && <5, directory, filemanip, mtl, parsec, containers
   hs-source-dirs:      src
   default-language:    Haskell2010
   
